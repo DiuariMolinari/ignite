@@ -1,33 +1,41 @@
-import { Comment } from './Comment'
-import styles from './Post.module.css'
+import { format, formatDistanceToNow } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
 
 import { Avatar } from './Avatar'
+import { Comment } from './Comment'
 
-export function Post({ author, content }) {
+import styles from './Post.module.css'
+
+export function Post({ author, content, publishedAt }) {
+    const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", { locale: ptBR })
+    const pusblishedDateRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true })
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src="https://github.com/DiuariMolinari.png" />
+                    <Avatar src={author.avatarUrl} />
                     <div className={styles.authorInfo}>
-                        <strong>Diuari Molinari</strong>
-                        <span>Dev</span>
+                        <strong>{author.name}</strong>
+                        <span>{author.role}</span>
                     </div>
                 </div>
-                <time title='11 de maio às 11:13' dateTime={Date.now}>
-                    Publicado há 1h 
+                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
+                    {pusblishedDateRelativeToNow} 
                 </time>
             </header>
 
             <div className={styles.content}>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                <p>Laboriosam, dolores itaque labore, odit error aliquam similique quibusdam</p> 
-                <p><a href="#">iusto esse aut vel natus recusandae adipisci officia. Magnam impedit dolorum optio?</a></p>
-                <p>
-                    <a href="#">#top</a> {' '}
-                    <a href="#">#de</a> {' '}
-                    <a href="#">#mais</a>
-                </p>
+                {
+                    content.map((item, index) => {
+                        if (item.type === 'paragraph') {
+                            return <p key={index}>{item.content}</p>
+                        } 
+                        else if (item.type === 'link') {
+                            return <p><a key={index} href='#'>{item.content}</a></p>
+                        }
+                    })
+                }
             </div>
 
             <form className={styles.commentForm}>
