@@ -19,15 +19,20 @@ interface Content {
     content: string
 }
 
-interface PostProps {
+export interface PostType {
+    id: number,
     author: Author,
-    content: Content[],
-    publishedAt: Date
+    publishedAt: Date,
+    content: Content[]
 }
 
-export function Post({ author, content, publishedAt } : PostProps) {
-    const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", { locale: ptBR })
-    const pusblishedDateRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true })
+interface PostProps {
+    post: PostType
+}
+
+export function Post({ post } : PostProps) {
+    const publishedDateFormatted = format(post.publishedAt, "d 'de' LLLL 'às' HH:mm'h'", { locale: ptBR })
+    const pusblishedDateRelativeToNow = formatDistanceToNow(post.publishedAt, { locale: ptBR, addSuffix: true })
    
     const [comments, setComments] = useState(["Parabéns!", "Muito bom!!", "Show! hahaha!"])
     const [newCommentText, setNewCommentText] = useState('')
@@ -58,20 +63,20 @@ export function Post({ author, content, publishedAt } : PostProps) {
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src={author.avatarUrl} />
+                    <Avatar src={post.author.avatarUrl} />
                     <div className={styles.authorInfo}>
-                        <strong>{author.name}</strong>
-                        <span>{author.role}</span>
+                        <strong>{post.author.name}</strong>
+                        <span>{post.author.role}</span>
                     </div>
                 </div>
-                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
+                <time title={publishedDateFormatted} dateTime={post.publishedAt.toISOString()}>
                     {pusblishedDateRelativeToNow} 
                 </time>
             </header>
 
             <div className={styles.content}>
                 {
-                    content.map((item) => {
+                    post.content.map((item) => {
                         if (item.type === 'paragraph') {
                             return <p key={item.content}>{item.content}</p>
                         } 

@@ -3,7 +3,6 @@ import { ImgHTMLAttributes } from "react";
 
 
 interface AvatarProps extends ImgHTMLAttributes<HTMLImageElement> {
-  src: string;
   hasBorder?: boolean;
 }
 
